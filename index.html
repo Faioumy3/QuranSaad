@@ -1147,7 +1147,7 @@
 
     <!-- أزرار القاع -->
     <div class="dashboard-footer">
-      <button class="btn-primary" style="background: #26ac68; color: white;" onclick="showDashboardPage()">رجوع</button>
+      <button class="btn-primary" style="background: #26ac68; color: white;" onclick="goBack()">رجوع</button>
       <button class="btn-secondary" style="background: #f44336; color: white;" onclick="logoutAdmin()">خروج</button>
     </div>
   </div>
@@ -1190,7 +1190,7 @@
 
     <!-- أزرار القاع -->
     <div class="dashboard-footer">
-      <button class="btn-primary" style="background: #26ac68; color: white;" onclick="showDashboardPage()">رجوع</button>
+      <button class="btn-primary" style="background: #26ac68; color: white;" onclick="goBack()">رجوع</button>
       <button class="btn-secondary" style="background: #f44336; color: white;" onclick="logoutAdmin()">خروج</button>
     </div>
   </div>
@@ -1238,7 +1238,7 @@
 
     <!-- أزرار القاع -->
     <div class="dashboard-footer">
-      <button class="btn-primary" style="background: #26ac68; color: white;" onclick="showDashboardPage()">رجوع</button>
+      <button class="btn-primary" style="background: #26ac68; color: white;" onclick="goBack()">رجوع</button>
       <button class="btn-secondary" style="background: #f44336; color: white;" onclick="logoutAdmin()">خروج</button>
     </div>
   </div>
@@ -1309,7 +1309,7 @@
 
     <!-- أزرار القاع -->
     <div class="dashboard-footer">
-      <button class="btn-primary" style="background: #26ac68; color: white;" onclick="showDashboardPage()">رجوع</button>
+      <button class="btn-primary" style="background: #26ac68; color: white;" onclick="goBack()">رجوع</button>
       <button class="btn-secondary" style="background: #f44336; color: white;" onclick="logoutAdmin()">خروج</button>
     </div>
   </div>
@@ -1384,45 +1384,120 @@
     let currentTeacher = null;
     let attendanceData = {};
 
-    // عرض صفحة الترحيب
-    function showHomePage() {
-      // إخفاء جميع الصفحات الأخرى
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('adminLoginPage').style.display = 'none';
-      document.getElementById('attendancePage').style.display = 'none';
-      document.getElementById('dashboardPage').style.display = 'none';
-      document.getElementById('studentsManagementPage').style.display = 'none';
-      document.getElementById('teacherStudentsPage').style.display = 'none';
-      document.getElementById('teacherReportsPage').style.display = 'none';
-      document.getElementById('backupReportsPage').style.display = 'none';
+    // ========== نظام إدارة المكدس (Stack Management) ==========
+    const pageStack = [];
+    const allPages = [
+      'homePage', 'loginPage', 'adminLoginPage', 'attendancePage', 
+      'dashboardPage', 'studentsManagementPage', 'teacherStudentsPage', 
+      'teacherReportsPage', 'backupReportsPage'
+    ];
+
+    // إخفاء جميع الصفحات
+    function hideAllPages() {
+      allPages.forEach(pageId => {
+        document.getElementById(pageId).style.display = 'none';
+      });
+      document.getElementById('mainFooter').style.display = 'none';
+      document.querySelector('.profile-image-container').style.display = 'none';
+    }
+
+    // إظهار صفحة معينة وإضافتها للمكدس
+    function navigateToPage(pageId) {
+      hideAllPages();
+      const displayValue = pageId === 'homePage' ? 'block' : 
+                          (pageId === 'loginPage' || pageId === 'adminLoginPage' ? 'flex' : 'block');
+      document.getElementById(pageId).style.display = displayValue;
       
-      // إظهار الصفحة الرئيسية
-      document.getElementById('homePage').style.display = 'block';
-      document.getElementById('mainFooter').style.display = 'flex';
-      
-      // إظهار الصورة فقط في الصفحة الرئيسية
-      document.querySelector('.profile-image-container').style.display = 'block';
-      
-      // تمرير للأعلى
+      // إذا كانت الصفحة الرئيسية، أظهر Footer والصورة
+      if (pageId === 'homePage') {
+        document.getElementById('mainFooter').style.display = 'flex';
+        document.querySelector('.profile-image-container').style.display = 'block';
+        pageStack.length = 0; // امسح المكدس عند العودة للرئيسية
+      } else {
+        document.querySelector('.profile-image-container').style.display = 'none';
+      }
+
+      // أضف الصفحة الجديدة للمكدس
+      if (pageStack[pageStack.length - 1] !== pageId) {
+        pageStack.push(pageId);
+      }
+
       window.scrollTo(0, 0);
     }
 
-    // عرض صفحة الدخول الإدارية
+    // الرجوع للصفحة السابقة
+    function goBack() {
+      if (pageStack.length > 1) {
+        pageStack.pop(); // أزل الصفحة الحالية
+        const previousPage = pageStack[pageStack.length - 1];
+        navigateToPage(previousPage);
+      } else {
+        navigateToPage('homePage');
+      }
+    }
+
+    // الخروج والعودة للرئيسية
+    function goToHome() {
+      navigateToPage('homePage');
+    }
+
+    // عرض صفحة الترحيب
+    function showHomePage() {
+      navigateToPage('homePage');
+    }
+
+    // عرض صفحة دخول الإدارة
     function showAdminLoginPage() {
-      document.getElementById('homePage').style.display = 'none';
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('adminLoginPage').style.display = 'flex';
-      document.getElementById('attendancePage').style.display = 'none';
-      document.getElementById('dashboardPage').style.display = 'none';
-      document.getElementById('studentsManagementPage').style.display = 'none';
-      document.getElementById('teacherStudentsPage').style.display = 'none';
-      document.getElementById('teacherReportsPage').style.display = 'none';
-      document.getElementById('backupReportsPage').style.display = 'none';
-      document.getElementById('mainFooter').style.display = 'none';
-      // إخفاء الصورة
-      document.querySelector('.profile-image-container').style.display = 'none';
+      navigateToPage('adminLoginPage');
       document.getElementById('adminPassword').focus();
-      window.scrollTo(0, 0);
+    }
+
+    // عرض صفحة دخول المعلم
+    function showLoginPage() {
+      navigateToPage('loginPage');
+      document.getElementById('teacherCode').focus();
+    }
+
+    // عرض صفحة الحضور
+    function showAttendancePage() {
+      navigateToPage('attendancePage');
+      updateDateDisplay();
+      loadTeacherStudents();
+    }
+
+    // عرض صفحة لوحة التحكم
+    function showDashboardPage() {
+      navigateToPage('dashboardPage');
+      updateAdminDateDisplay();
+      refreshDashboard();
+    }
+
+    // عرض صفحة إدارة الطلاب
+    function showStudentsManagementPage() {
+      navigateToPage('studentsManagementPage');
+      renderStudentsList_Admin();
+    }
+
+    // عرض صفحة إدارة طلاب المعلمين
+    function showTeacherStudentsPage() {
+      navigateToPage('teacherStudentsPage');
+      document.getElementById('selectTeacher').value = '';
+      document.getElementById('addStudentFormContainer').style.display = 'none';
+      document.getElementById('teacherStudentsListContainer').style.display = 'none';
+    }
+
+    // عرض صفحة التقارير المخصصة للمعلمين
+    function showTeacherReportsPage() {
+      navigateToPage('teacherReportsPage');
+      document.getElementById('selectTeacherForReport').addEventListener('change', loadTeacherReportStats);
+    }
+
+    // عرض صفحة النسخ الاحتياطية والتقارير
+    function showBackupReportsPage() {
+      navigateToPage('backupReportsPage');
+      const today = new Date();
+      document.getElementById('reportMonth').value = today.getMonth() + 1;
+      document.getElementById('reportYear').value = today.getFullYear();
     }
 
     // دخول الإدارة
@@ -1444,43 +1519,6 @@
       } else {
         errorDiv.textContent = 'كلمة السر غير صحيحة';
       }
-    }
-
-    // عرض صفحة الدخول
-    function showLoginPage() {
-      document.getElementById('homePage').style.display = 'none';
-      document.getElementById('loginPage').style.display = 'flex';
-      document.getElementById('adminLoginPage').style.display = 'none';
-      document.getElementById('attendancePage').style.display = 'none';
-      document.getElementById('dashboardPage').style.display = 'none';
-      document.getElementById('studentsManagementPage').style.display = 'none';
-      document.getElementById('teacherStudentsPage').style.display = 'none';
-      document.getElementById('teacherReportsPage').style.display = 'none';
-      document.getElementById('backupReportsPage').style.display = 'none';
-      document.getElementById('mainFooter').style.display = 'none';
-      // إخفاء الصورة
-      document.querySelector('.profile-image-container').style.display = 'none';
-      document.getElementById('teacherCode').focus();
-      window.scrollTo(0, 0);
-    }
-
-    // عرض صفحة الحضور
-    function showAttendancePage() {
-      document.getElementById('homePage').style.display = 'none';
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('adminLoginPage').style.display = 'none';
-      document.getElementById('attendancePage').style.display = 'block';
-      document.getElementById('dashboardPage').style.display = 'none';
-      document.getElementById('studentsManagementPage').style.display = 'none';
-      document.getElementById('teacherStudentsPage').style.display = 'none';
-      document.getElementById('teacherReportsPage').style.display = 'none';
-      document.getElementById('backupReportsPage').style.display = 'none';
-      document.getElementById('mainFooter').style.display = 'none';
-      // إخفاء الصورة
-      document.querySelector('.profile-image-container').style.display = 'none';
-      updateDateDisplay();
-      loadTeacherStudents();
-      window.scrollTo(0, 0);
     }
 
     // دخول المعلم
@@ -1743,8 +1781,14 @@
       currentTeacher = null;
       attendanceData = {};
       document.getElementById('teacherCode').value = '';
+      document.getElementById('teacherPassword').value = '';
       document.getElementById('loginError').textContent = '';
-      showHomePage();
+      goToHome();
+    }
+
+    // خروج الإدارة
+    function logoutAdmin() {
+      goToHome();
     }
 
     // التعامل مع مفتاح Enter في حقل الكود والرمز السري
@@ -1781,26 +1825,6 @@
     });
 
     // ========== دوال لوحة التحكم الإدارية ==========
-
-    // عرض صفحة لوحة التحكم
-    function showDashboardPage() {
-      document.getElementById('homePage').style.display = 'none';
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('adminLoginPage').style.display = 'none';
-      document.getElementById('attendancePage').style.display = 'none';
-      document.getElementById('dashboardPage').style.display = 'block';
-      document.getElementById('studentsManagementPage').style.display = 'none';
-      document.getElementById('teacherStudentsPage').style.display = 'none';
-      document.getElementById('teacherReportsPage').style.display = 'none';
-      document.getElementById('backupReportsPage').style.display = 'none';
-      document.getElementById('mainFooter').style.display = 'none';
-      // إخفاء الصورة
-      document.querySelector('.profile-image-container').style.display = 'none';
-      
-      updateAdminDateDisplay();
-      refreshDashboard();
-      window.scrollTo(0, 0);
-    }
 
     // دالة لتحديث تاريخ الإدارة
     function updateAdminDateDisplay() {
@@ -1960,11 +1984,6 @@
       link.click();
     }
 
-    // دالة لخروج الإدارة
-    function logoutAdmin() {
-      showHomePage();
-    }
-
     // ========== تحديث دالة حفظ السجلات لاستخدام localStorage ==========
     async function saveAttendanceRecords() {
       if (Object.keys(attendanceData).length === 0) {
@@ -2009,23 +2028,6 @@
     }
 
     // ========== دوال إدارة الطلاب ==========
-
-    // عرض صفحة إدارة الطلاب
-    function showStudentsManagementPage() {
-      document.getElementById('homePage').style.display = 'none';
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('adminLoginPage').style.display = 'none';
-      document.getElementById('attendancePage').style.display = 'none';
-      document.getElementById('dashboardPage').style.display = 'none';
-      document.getElementById('backupReportsPage').style.display = 'none';
-      document.getElementById('teacherStudentsPage').style.display = 'none';
-      document.getElementById('teacherReportsPage').style.display = 'none';
-      document.getElementById('studentsManagementPage').style.display = 'block';
-      // إخفاء الصورة
-      document.querySelector('.profile-image-container').style.display = 'none';
-      renderStudentsList_Admin();
-      window.scrollTo(0, 0);
-    }
 
     // إضافة طالب جديد
     function addNewStudent() {
@@ -2100,27 +2102,6 @@
     }
 
     // ========== دوال النسخ الاحتياطية والتقارير ==========
-
-    // عرض صفحة النسخ الاحتياطية
-    function showBackupReportsPage() {
-      document.getElementById('homePage').style.display = 'none';
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('adminLoginPage').style.display = 'none';
-      document.getElementById('attendancePage').style.display = 'none';
-      document.getElementById('dashboardPage').style.display = 'none';
-      document.getElementById('studentsManagementPage').style.display = 'none';
-      document.getElementById('teacherStudentsPage').style.display = 'none';
-      document.getElementById('teacherReportsPage').style.display = 'none';
-      document.getElementById('backupReportsPage').style.display = 'block';
-      // إخفاء الصورة
-      document.querySelector('.profile-image-container').style.display = 'none';
-      
-      // ضع الشهر والسنة الحالية
-      const today = new Date();
-      document.getElementById('reportMonth').value = today.getMonth() + 1;
-      document.getElementById('reportYear').value = today.getFullYear();
-      window.scrollTo(0, 0);
-    }
 
     // إنشاء وتحميل النسخة الاحتياطية
     function createAndDownloadBackup() {
@@ -2215,25 +2196,6 @@
     }
 
     // ========== دوال إدارة طلاب المعلمين ==========
-
-    // عرض صفحة إدارة طلاب المعلمين
-    function showTeacherStudentsPage() {
-      document.getElementById('homePage').style.display = 'none';
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('adminLoginPage').style.display = 'none';
-      document.getElementById('attendancePage').style.display = 'none';
-      document.getElementById('dashboardPage').style.display = 'none';
-      document.getElementById('studentsManagementPage').style.display = 'none';
-      document.getElementById('backupReportsPage').style.display = 'none';
-      document.getElementById('teacherReportsPage').style.display = 'none';
-      document.getElementById('teacherStudentsPage').style.display = 'block';
-      // إخفاء الصورة
-      document.querySelector('.profile-image-container').style.display = 'none';
-      document.getElementById('selectTeacher').value = '';
-      document.getElementById('addStudentFormContainer').style.display = 'none';
-      document.getElementById('teacherStudentsListContainer').style.display = 'none';
-      window.scrollTo(0, 0);
-    }
 
     // تحميل طلاب المعلم المختار
     function loadTeacherStudentsForEdit() {
@@ -2381,23 +2343,6 @@
     }
 
     // ========== دوال التقارير المخصصة للمعلمين ==========
-
-    // عرض صفحة التقارير المخصصة
-    function showTeacherReportsPage() {
-      document.getElementById('homePage').style.display = 'none';
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('adminLoginPage').style.display = 'none';
-      document.getElementById('attendancePage').style.display = 'none';
-      document.getElementById('dashboardPage').style.display = 'none';
-      document.getElementById('studentsManagementPage').style.display = 'none';
-      document.getElementById('backupReportsPage').style.display = 'none';
-      document.getElementById('teacherStudentsPage').style.display = 'none';
-      document.getElementById('teacherReportsPage').style.display = 'block';
-      // إخفاء الصورة
-      document.querySelector('.profile-image-container').style.display = 'none';
-      document.getElementById('selectTeacherForReport').addEventListener('change', loadTeacherReportStats);
-      window.scrollTo(0, 0);
-    }
 
     // تحميل إحصائيات المعلم
     function loadTeacherReportStats() {
