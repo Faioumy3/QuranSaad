@@ -2209,12 +2209,93 @@
         return;
       }
 
-      const newName = prompt('اسم المعلم الجديد:', teacher.name);
-      if (newName && newName.trim()) {
-        teacher.name = newName.trim();
-        alert('✓ تم تحديث اسم المعلم بنجاح');
-        renderTeachersList();
+      // إنشاء نموذج تعديل
+      const editHTML = `
+        <div style="text-align: right; direction: rtl;">
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.3rem; font-weight: bold; color: #147a3d;">اسم المعلم:</label>
+            <input type="text" id="editTeacherName" class="form-control" value="${teacher.name}" style="padding: 0.6rem; border: 1px solid #ddd; border-radius: 4px; font-family: inherit;">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.3rem; font-weight: bold; color: #147a3d;">الكود:</label>
+            <input type="text" id="editTeacherCode" class="form-control" value="${teacher.code}" style="padding: 0.6rem; border: 1px solid #ddd; border-radius: 4px; font-family: inherit;" disabled title="لا يمكن تعديل الكود">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.3rem; font-weight: bold; color: #147a3d;">كلمة السر:</label>
+            <input type="text" id="editTeacherPassword" class="form-control" value="${teacher.password}" style="padding: 0.6rem; border: 1px solid #ddd; border-radius: 4px; font-family: inherit;">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.3rem; font-weight: bold; color: #147a3d;">البريد الإلكتروني:</label>
+            <input type="email" id="editTeacherEmail" class="form-control" value="${teacher.email}" style="padding: 0.6rem; border: 1px solid #ddd; border-radius: 4px; font-family: inherit;">
+          </div>
+        </div>
+      `;
+
+      // عرض نافذة منبثقة مخصصة
+      const container = document.createElement('div');
+      container.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 9999;';
+      
+      const modal = document.createElement('div');
+      modal.style.cssText = 'background: white; padding: 2rem; border-radius: 12px; max-width: 500px; width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3);';
+      
+      modal.innerHTML = `
+        <h3 style="color: #147a3d; margin-bottom: 1.5rem; text-align: right;">✏️ تعديل بيانات المعلم</h3>
+        ${editHTML}
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-direction: row-reverse;">
+          <button onclick="closeEditModal()" style="flex: 1; padding: 0.8rem; background: #f44336; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">❌ إلغاء</button>
+          <button onclick="saveTeacherEdit('${code}')" style="flex: 1; padding: 0.8rem; background: #26ac68; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">✓ حفظ</button>
+        </div>
+      `;
+      
+      container.appendChild(modal);
+      document.body.appendChild(container);
+      window.editModalContainer = container;
+    }
+
+    // إغلاق النافذة المنبثقة للتعديل
+    function closeEditModal() {
+      if (window.editModalContainer) {
+        window.editModalContainer.remove();
+        window.editModalContainer = null;
       }
+    }
+
+    // حفظ تعديلات المعلم
+    function saveTeacherEdit(code) {
+      const teacher = teachersDB[code];
+      
+      const newName = document.getElementById('editTeacherName').value.trim();
+      const newPassword = document.getElementById('editTeacherPassword').value.trim();
+      const newEmail = document.getElementById('editTeacherEmail').value.trim();
+
+      if (!newName) {
+        alert('❌ الرجاء إدخال اسم المعلم');
+        return;
+      }
+
+      if (!newPassword) {
+        alert('❌ الرجاء إدخال كلمة السر');
+        return;
+      }
+
+      if (!newEmail) {
+        alert('❌ الرجاء إدخال البريد الإلكتروني');
+        return;
+      }
+
+      if (!newEmail.includes('@')) {
+        alert('❌ الرجاء إدخال بريد إلكتروني صحيح');
+        return;
+      }
+
+      // تحديث البيانات
+      teacher.name = newName;
+      teacher.password = newPassword;
+      teacher.email = newEmail;
+
+      alert('✓ تم تحديث بيانات المعلم بنجاح');
+      closeEditModal();
+      renderTeachersList();
     }
 
     // ========== دوال إدارة الطلاب ==========
