@@ -1002,6 +1002,8 @@
             </div>
             <button class="btn btn-primary mt-3" onclick="showLoginPage()">دخول المعلمين</button>
             <button class="btn btn-primary mt-2" style="background: #3f51b5;" onclick="showAdminLoginPage()">لوحة التحكم</button>
+            <button class="btn btn-primary mt-2" style="background: #ff6b9d;" onclick="showStudentLoginPage()">دخول الطالب</button>
+            <button class="btn btn-primary mt-2" style="background: #c77dff;" onclick="showStudentRegistrationPage()">تسجيل طالب جديد</button>
           </div>
         </div>
       </div>
@@ -1036,6 +1038,53 @@
       </div>
       <button class="btn btn-primary" onclick="loginTeacher()">دخول</button>
       <div id="loginError" class="error-message"></div>
+      <button class="btn btn-secondary" onclick="showHomePage()">رجوع</button>
+    </div>
+  </div>
+
+  <!-- صفحة تسجيل طالب جديد -->
+  <div id="studentRegistrationPage" style="display: none;" class="login-container" dir="rtl">
+    <div class="login-card">
+      <h2 class="login-title">✏️ تسجيل طالب جديد</h2>
+      <div class="form-group">
+        <label for="regStudentName">اسم الطالب:</label>
+        <input type="text" id="regStudentName" class="form-control" placeholder="أدخل اسمك" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="regStudentCode">كود الطالب:</label>
+        <input type="text" id="regStudentCode" class="form-control" placeholder="اختر كودك" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="regStudentPassword">كلمة السر:</label>
+        <input type="password" id="regStudentPassword" class="form-control" placeholder="اختر كلمة سر آمنة" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="regStudentPasswordConfirm">تأكيد كلمة السر:</label>
+        <input type="password" id="regStudentPasswordConfirm" class="form-control" placeholder="أعد إدخال كلمة السر" autocomplete="off">
+      </div>
+      <button class="btn btn-primary" onclick="registerNewStudent()">✓ تسجيل</button>
+      <div id="registrationError" class="error-message"></div>
+      <div id="registrationSuccess" class="success-message"></div>
+      <button class="btn btn-secondary" onclick="showStudentLoginPage()">لديّ حساب بالفعل</button>
+      <button class="btn btn-secondary" onclick="showHomePage()">رجوع</button>
+    </div>
+  </div>
+
+  <!-- صفحة دخول الطالب -->
+  <div id="studentLoginPage" style="display: none;" class="login-container" dir="rtl">
+    <div class="login-card">
+      <h2 class="login-title">🎓 دخول الطالب</h2>
+      <div class="form-group">
+        <label for="loginStudentCode">كود الطالب:</label>
+        <input type="text" id="loginStudentCode" class="form-control" placeholder="أدخل كودك" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="loginStudentPassword">كلمة السر:</label>
+        <input type="password" id="loginStudentPassword" class="form-control" placeholder="أدخل كلمة السر" autocomplete="off">
+      </div>
+      <button class="btn btn-primary" onclick="loginStudent()">دخول</button>
+      <div id="studentLoginError" class="error-message"></div>
+      <button class="btn btn-secondary" onclick="showStudentRegistrationPage()">ليس لديّ حساب</button>
       <button class="btn btn-secondary" onclick="showHomePage()">رجوع</button>
     </div>
   </div>
@@ -1361,6 +1410,73 @@
     </div>
   </div>
 
+  <!-- صفحة لوحة الطالب -->
+  <div id="studentDashboardPage" style="display: none;" class="dashboard-container" dir="rtl">
+    <div class="dashboard-header">
+      <h2 class="dashboard-title">🎓 لوحة الطالب</h2>
+      <div class="admin-info">
+        مرحباً <span id="studentDisplayName"></span> - <span id="studentDate"></span>
+      </div>
+    </div>
+
+    <!-- قسم تسجيل اليوميات -->
+    <div class="student-form">
+      <h5 style="color: #147a3d; margin-bottom: 1rem; text-align: right;">📝 تسجيل اليوميات</h5>
+      
+      <!-- حقل الحفظ الجديد -->
+      <div class="form-group">
+        <label for="studentNewMemorizing">📖 مقدار الحفظ الجديد:</label>
+        <input type="text" id="studentNewMemorizing" class="form-control" placeholder="مثال: من سورة الفاتحة إلى الآية 5" autocomplete="off">
+      </div>
+
+      <!-- حقل المراجعة -->
+      <div class="form-group">
+        <label for="studentReview">🔄 مقدار ورد المراجعة:</label>
+        <input type="text" id="studentReview" class="form-control" placeholder="مثال: سورة البقرة من الآية 1-10" autocomplete="off">
+      </div>
+
+      <!-- حقل التسميع -->
+      <div class="form-group">
+        <label for="studentListening">🎤 التسميع على المعلم:</label>
+        <select id="studentListening" class="form-control">
+          <option value="">-- اختر --</option>
+          <option value="نعم">✓ نعم</option>
+          <option value="لا">✗ لا</option>
+          <option value="جزئي">◐ جزئي</option>
+        </select>
+      </div>
+
+      <!-- حقل تحديد الجديد -->
+      <div class="form-group">
+        <label for="studentNewTarget">📍 تحديد الجديد (الهدف التالي):</label>
+        <input type="text" id="studentNewTarget" class="form-control" placeholder="مثال: من سورة الفاتحة إلى الآية 7" autocomplete="off">
+      </div>
+
+      <!-- ملاحظات إضافية -->
+      <div class="form-group">
+        <label for="studentNotes">💬 ملاحظات إضافية:</label>
+        <textarea id="studentNotes" class="form-control" placeholder="اكتب أي ملاحظات تريدها" rows="4" autocomplete="off"></textarea>
+      </div>
+
+      <button class="btn btn-primary" style="background: #26ac68; color: white;" onclick="saveStudentDailyRecord()">✓ حفظ اليوميات</button>
+      <div id="studentRecordMessage" style="margin-top: 1rem; text-align: center; font-weight: bold;"></div>
+    </div>
+
+    <!-- قسم السجل التاريخي -->
+    <div class="student-form">
+      <h5 style="color: #147a3d; margin-bottom: 1rem; text-align: right;">📅 السجل التاريخي</h5>
+      <div id="studentHistoryList" style="max-height: 400px; overflow-y: auto;">
+        <p style="text-align: center; color: #999;">لا توجد سجلات بعد</p>
+      </div>
+    </div>
+
+    <!-- أزرار القاع -->
+    <div class="dashboard-footer">
+      <button class="btn-primary" style="background: #26ac68; color: white;" onclick="goBack()">رجوع</button>
+      <button class="btn-secondary" style="background: #f44336; color: white;" onclick="logoutStudent()">خروج</button>
+    </div>
+  </div>
+
   <!-- صفحة لوحة التحكم الإدارية (Dashboard) -->
   <div id="dashboardPage" style="display: none;" class="dashboard-container" dir="rtl">
     <div class="dashboard-header">
@@ -1435,9 +1551,9 @@
     // ========== نظام إدارة المكدس (Stack Management) ==========
     const pageStack = [];
     const allPages = [
-      'homePage', 'loginPage', 'adminLoginPage', 'attendancePage', 
-      'dashboardPage', 'studentsManagementPage', 'teacherStudentsPage', 
-      'teacherReportsPage', 'backupReportsPage', 'teachersManagementPage'
+      'homePage', 'loginPage', 'adminLoginPage', 'studentRegistrationPage', 'studentLoginPage',
+      'attendancePage', 'dashboardPage', 'studentsManagementPage', 'teacherStudentsPage', 
+      'teacherReportsPage', 'backupReportsPage', 'teachersManagementPage', 'studentDashboardPage'
     ];
 
     // إخفاء جميع الصفحات
@@ -1504,6 +1620,27 @@
     function showLoginPage() {
       navigateToPage('loginPage');
       document.getElementById('teacherCode').focus();
+    }
+
+    // عرض صفحة تسجيل طالب جديد
+    function showStudentRegistrationPage() {
+      navigateToPage('studentRegistrationPage');
+      document.getElementById('regStudentName').value = '';
+      document.getElementById('regStudentCode').value = '';
+      document.getElementById('regStudentPassword').value = '';
+      document.getElementById('regStudentPasswordConfirm').value = '';
+      document.getElementById('registrationError').textContent = '';
+      document.getElementById('registrationSuccess').textContent = '';
+      document.getElementById('regStudentName').focus();
+    }
+
+    // عرض صفحة دخول الطالب
+    function showStudentLoginPage() {
+      navigateToPage('studentLoginPage');
+      document.getElementById('loginStudentCode').value = '';
+      document.getElementById('loginStudentPassword').value = '';
+      document.getElementById('studentLoginError').textContent = '';
+      document.getElementById('loginStudentCode').focus();
     }
 
     // عرض صفحة الحضور
@@ -1610,7 +1747,265 @@
       }
     }
 
-    // تحميل طلاب المعلم الحالي تلقائياً
+    // ========== دوال تسجيل وتحقق الطالب ==========
+
+    // تسجيل طالب جديد
+    function registerNewStudent() {
+      const name = document.getElementById('regStudentName').value.trim();
+      const code = document.getElementById('regStudentCode').value.trim();
+      const password = document.getElementById('regStudentPassword').value.trim();
+      const passwordConfirm = document.getElementById('regStudentPasswordConfirm').value.trim();
+      const errorDiv = document.getElementById('registrationError');
+      const successDiv = document.getElementById('registrationSuccess');
+      errorDiv.textContent = '';
+      successDiv.textContent = '';
+
+      // التحقق من الحقول
+      if (!name) {
+        errorDiv.textContent = '❌ الرجاء إدخال اسمك';
+        return;
+      }
+      if (!code) {
+        errorDiv.textContent = '❌ الرجاء إدخال كود';
+        return;
+      }
+      if (!password) {
+        errorDiv.textContent = '❌ الرجاء إدخال كلمة السر';
+        return;
+      }
+      if (!passwordConfirm) {
+        errorDiv.textContent = '❌ الرجاء تأكيد كلمة السر';
+        return;
+      }
+      if (password !== passwordConfirm) {
+        errorDiv.textContent = '❌ كلمات السر غير متطابقة';
+        return;
+      }
+      if (code.length < 3) {
+        errorDiv.textContent = '❌ الكود يجب أن يكون 3 أحرف على الأقل';
+        return;
+      }
+      if (password.length < 4) {
+        errorDiv.textContent = '❌ كلمة السر يجب أن تكون 4 أحرف على الأقل';
+        return;
+      }
+
+      // التحقق من عدم تكرار الكود
+      if (registeredStudentsDB[code]) {
+        errorDiv.textContent = '❌ هذا الكود مستخدم بالفعل، اختر كود آخر';
+        return;
+      }
+
+      // إضافة الطالب إلى قاعدة البيانات
+      registeredStudentsDB[code] = {
+        name: name,
+        code: code,
+        password: password,
+        registrationDate: new Date().toISOString().split('T')[0]
+      };
+
+      // مسح النموذج
+      document.getElementById('regStudentName').value = '';
+      document.getElementById('regStudentCode').value = '';
+      document.getElementById('regStudentPassword').value = '';
+      document.getElementById('regStudentPasswordConfirm').value = '';
+
+      successDiv.textContent = '✓ تم التسجيل بنجاح! اذهب إلى دخول الطالب';
+      
+      // الانتقال إلى صفحة الدخول بعد 2 ثانية
+      setTimeout(() => {
+        showStudentLoginPage();
+      }, 2000);
+    }
+
+    // دخول الطالب
+    function loginStudent() {
+      const code = document.getElementById('loginStudentCode').value.trim();
+      const password = document.getElementById('loginStudentPassword').value.trim();
+      const errorDiv = document.getElementById('studentLoginError');
+      errorDiv.textContent = '';
+
+      if (!code) {
+        errorDiv.textContent = '❌ الرجاء إدخال الكود';
+        return;
+      }
+
+      if (!password) {
+        errorDiv.textContent = '❌ الرجاء إدخال كلمة السر';
+        return;
+      }
+
+      const student = registeredStudentsDB[code];
+
+      if (!student) {
+        errorDiv.textContent = '❌ الكود غير موجود';
+        return;
+      }
+
+      if (student.password !== password) {
+        errorDiv.textContent = '❌ كلمة السر غير صحيحة';
+        return;
+      }
+
+      // نجح التحقق
+      sessionStorage.setItem('currentStudentCode', code);
+      sessionStorage.setItem('currentStudentName', student.name);
+      
+      // مسح الحقول
+      document.getElementById('loginStudentCode').value = '';
+      document.getElementById('loginStudentPassword').value = '';
+
+      // الانتقال إلى لوحة الطالب
+      showStudentDashboardPage();
+    }
+
+    // عرض لوحة الطالب
+    function showStudentDashboardPage() {
+      navigateToPage('studentDashboardPage');
+      const studentName = sessionStorage.getItem('currentStudentName');
+      const studentCode = sessionStorage.getItem('currentStudentCode');
+      document.getElementById('studentDisplayName').textContent = studentName;
+      
+      // تحديث التاريخ
+      const today = new Date();
+      const dateStr = today.toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      document.getElementById('studentDate').textContent = dateStr;
+
+      // مسح النموذج
+      document.getElementById('studentNewMemorizing').value = '';
+      document.getElementById('studentReview').value = '';
+      document.getElementById('studentListening').value = '';
+      document.getElementById('studentNewTarget').value = '';
+      document.getElementById('studentNotes').value = '';
+      document.getElementById('studentRecordMessage').textContent = '';
+
+      // تحميل السجل التاريخي
+      loadStudentDailyRecords();
+    }
+
+    // حفظ سجل اليوميات
+    function saveStudentDailyRecord() {
+      const studentCode = sessionStorage.getItem('currentStudentCode');
+      const studentName = sessionStorage.getItem('currentStudentName');
+      const messageDiv = document.getElementById('studentRecordMessage');
+      messageDiv.textContent = '';
+
+      const newMemorizing = document.getElementById('studentNewMemorizing').value.trim();
+      const review = document.getElementById('studentReview').value.trim();
+      const listening = document.getElementById('studentListening').value;
+      const newTarget = document.getElementById('studentNewTarget').value.trim();
+      const notes = document.getElementById('studentNotes').value.trim();
+
+      // التحقق من الحقول الأساسية
+      if (!newMemorizing) {
+        messageDiv.textContent = '❌ الرجاء إدخال مقدار الحفظ الجديد';
+        messageDiv.style.color = '#d32f2f';
+        return;
+      }
+      if (!review) {
+        messageDiv.textContent = '❌ الرجاء إدخال مقدار المراجعة';
+        messageDiv.style.color = '#d32f2f';
+        return;
+      }
+      if (!listening) {
+        messageDiv.textContent = '❌ الرجاء تحديد التسميع';
+        messageDiv.style.color = '#d32f2f';
+        return;
+      }
+      if (!newTarget) {
+        messageDiv.textContent = '❌ الرجاء إدخال تحديد الجديد';
+        messageDiv.style.color = '#d32f2f';
+        return;
+      }
+
+      // إنشاء سجل جديد
+      if (!window.studentDailyRecords) {
+        window.studentDailyRecords = {};
+      }
+      if (!window.studentDailyRecords[studentCode]) {
+        window.studentDailyRecords[studentCode] = [];
+      }
+
+      const record = {
+        date: new Date().toISOString(),
+        dateDisplay: new Date().toLocaleDateString('ar-SA'),
+        newMemorizing: newMemorizing,
+        review: review,
+        listening: listening,
+        newTarget: newTarget,
+        notes: notes
+      };
+
+      window.studentDailyRecords[studentCode].push(record);
+
+      // مسح النموذج
+      document.getElementById('studentNewMemorizing').value = '';
+      document.getElementById('studentReview').value = '';
+      document.getElementById('studentListening').value = '';
+      document.getElementById('studentNewTarget').value = '';
+      document.getElementById('studentNotes').value = '';
+
+      messageDiv.textContent = '✓ تم حفظ اليوميات بنجاح!';
+      messageDiv.style.color = '#26ac68';
+
+      // تحميل السجل التاريخي
+      setTimeout(() => {
+        loadStudentDailyRecords();
+      }, 1000);
+    }
+
+    // تحميل السجل التاريخي
+    function loadStudentDailyRecords() {
+      const studentCode = sessionStorage.getItem('currentStudentCode');
+      const historyDiv = document.getElementById('studentHistoryList');
+
+      if (!window.studentDailyRecords || !window.studentDailyRecords[studentCode] || window.studentDailyRecords[studentCode].length === 0) {
+        historyDiv.innerHTML = '<p style="text-align: center; color: #999;">لا توجد سجلات بعد</p>';
+        return;
+      }
+
+      let html = '';
+      const records = window.studentDailyRecords[studentCode];
+      
+      // عرض السجلات من الأحدث إلى الأقدم
+      records.reverse().forEach((record, index) => {
+        html += `
+          <div style="padding: 1rem; border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 1rem; background: #f9f9f9;">
+            <div style="color: #26ac68; font-weight: bold; margin-bottom: 0.8rem;">📅 ${record.dateDisplay}</div>
+            <div style="margin-bottom: 0.6rem;">
+              <span style="font-weight: bold; color: #147a3d;">📖 الحفظ الجديد:</span> ${record.newMemorizing}
+            </div>
+            <div style="margin-bottom: 0.6rem;">
+              <span style="font-weight: bold; color: #147a3d;">🔄 المراجعة:</span> ${record.review}
+            </div>
+            <div style="margin-bottom: 0.6rem;">
+              <span style="font-weight: bold; color: #147a3d;">🎤 التسميع:</span> ${record.listening}
+            </div>
+            <div style="margin-bottom: 0.6rem;">
+              <span style="font-weight: bold; color: #147a3d;">📍 الهدف التالي:</span> ${record.newTarget}
+            </div>
+            ${record.notes ? `<div style="margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid #ddd;">
+              <span style="font-weight: bold; color: #147a3d;">💬 ملاحظات:</span> ${record.notes}
+            </div>` : ''}
+          </div>
+        `;
+      });
+
+      historyDiv.innerHTML = html;
+      records.reverse(); // إعادة الترتيب للحفاظ على الترتيب الأصلي
+    }
+
+    // تسجيل خروج الطالب
+    function logoutStudent() {
+      if (confirm('هل تريد تسجيل الخروج؟')) {
+        sessionStorage.removeItem('currentStudentCode');
+        sessionStorage.removeItem('currentStudentName');
+        showHomePage();
+        alert('تم تسجيل الخروج بنجاح');
+      }
+    }
+
+    // تحميل بيانات الطالب الحالي
     function loadTeacherStudents() {
       if (!currentTeacher) {
         return;
